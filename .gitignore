@@ -1,24 +1,74 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
 venv/
-.env
+env/
+ENV/
+.venv
 *.egg-info/
+
+# Environment files - NEVER commit these!
+.env
+.env.*
+*.env
+.env.local
+.env.development
+.env.production
+.env.test
+backend/.env
+backend/.env.*
+
+# API Keys and Secrets
+*api_key*
+*secret*
+.secrets/
+config/secrets/
 
 # Node
 node_modules/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 dist/
+build/
 *.zip
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 .DS_Store
+Thumbs.db
 
 # Redis
 dump.rdb
 
 # Logs
 *.log
-backend/.env
+logs/
+*.log.*
+
+# Martin specific
+backend/logs/
+extension/dist/
+stats.json
+martin-extension-*.zip
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
