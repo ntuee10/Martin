@@ -1,0 +1,115 @@
+name: Martin CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run linting
+      run: |
+        cd backend
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        black --check .
+    
+    - name: Run tests
+      env:
+        GROK3_API_KEY: dummy_key_for_tests
+      run: |
+        cd backend
+        pytest -v
+  
+  extension-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: extension/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd extension
+        npm ci
+    
+    - name: Build extension
+      run: |
+        cd extension
+        npm run build
+    
+    - name: Archive extension
+      uses: actions/upload-artifact@v3
+      with:
+        name: martin-extension
+        path: extension/dist_v2/
+  
+  release:
+    needs: [backend-tests, extension-build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download extension artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: martin-extension
+        path: extension/dist_v2/
+    
+    - name: Create Release Package
+      run: |
+        cd extension/dist_v2
+        zip -r ../../martin-extension-v2.0.0.zip .
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: martin-extension-v2.0.0.zip
+        body: |
+          ## Martin v2.0.0 Release
+          
+          ### 🎯 What's New
+          - Grammarly-style UI with real-time suggestions
+          - Developer-focused prompt optimizations
+          - Support for ChatGPT, Claude, Cursor, and more
+          - Token savings metrics dashboard
+          
+          ### 📦 Installation
+          1. Download the extension zip
+          2. Extract to a folder
+          3. Load in Chrome via Developer mode
+          
+          See full documentation at [GitHub](https://github.com/ntuee10/Martin)

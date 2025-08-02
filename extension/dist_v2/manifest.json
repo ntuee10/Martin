@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "Martin - AI Prompt Optimizer",
+  "version": "2.0.0",
+  "description": "Professional prompt optimization for developers using AI coding assistants. Transform vague prompts into precise, technical specifications.",
+  "author": "Martin Team",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://cursor.sh/*",
+        "https://gemini.google.com/*",
+        "https://github.com/*",
+        "https://copilot.github.com/*",
+        "https://poe.com/*",
+        "https://bard.google.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://localhost:8000/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
