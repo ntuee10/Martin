@@ -1,44 +1,24 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
 venv/
-env/
 .env
 *.egg-info/
-dist/
-build/
-.pytest_cache/
-.coverage
 
 # Node
 node_modules/
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Extension
-extension/dist/
-extension/*.zip
+dist/
+*.zip
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
 .DS_Store
 
 # Redis
 dump.rdb
-appendonly.aof
 
 # Logs
 *.log
-logs/
-
-# Docker
-.docker/
+backend/.env
